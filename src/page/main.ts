@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error WebXR doesn't have type declaration.
 import {LookingGlassConfig, LookingGlassWebXRPolyfill} from "@lookingglass/webxr";
 import * as THREE from "three";
 import {FontLoader} from "three/addons";
@@ -69,3 +69,6 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
+// @ts-expect-error testing
+window.electronAPI.onTest(console.log);

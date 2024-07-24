@@ -1,9 +1,9 @@
-import configs, {AssetOptions} from "./config.js";
 import esbuild, {BuildOptions} from "esbuild";
 import * as fs from "node:fs/promises";
 import chokidar from "chokidar";
 import path from "node:path";
-import {promiseDebounce} from "./debounce.js";
+import {promiseDebounce} from "build:debounce.js";
+import configs, {AssetOptions} from "build:config.js";
 
 const watch = process.argv[2] === "watch";
 
@@ -13,10 +13,12 @@ function isAssets(config: AssetOptions | BuildOptions): config is AssetOptions {
     return "type" in config && config.type === "assets";
 }
 
-async function processFile(config: AssetOptions, filePath: string) {
+async function processFile(config: AssetOptions, _filePath: string) {
     try {
         await fs.rm(config.outdir, {recursive: true});
-    } catch (e) {}
+    } catch (e) {
+        /* noop */
+    }
     await fs.cp(config.entryPoint, config.outdir, {recursive: true});
 }
 
@@ -26,11 +28,11 @@ async function run() {
         for (const config of buildOptions) {
             if (isAssets(config)) {
                 const path2 = path.join(config.entryPoint, "**", "*");
-                console.log(path2);
+                await fs.mkdir(config.outdir, {recursive: true});
                 const watcher = chokidar.watch(path2);
-
+                
                 const debounced = promiseDebounce(processFile, 1000);
-
+                
                 watcher.on("add", async (filePath) => {
                     debounced(config, filePath);
                 });
@@ -41,7 +43,10 @@ async function run() {
                     debounced(config, filePath);
                 });
             } else {
-                const ctx = await esbuild.context(config);
+                const ctx = await esbuild.context({
+                    ...config,
+                    logLevel: "info"
+                });
                 promises.push(ctx.watch());
             }
         }
@@ -50,7 +55,11 @@ async function run() {
         const promises = [];
         for (const config of buildOptions) {
             if (isAssets(config)) {
-                await fs.rm(config.outdir, {recursive: true});
+                try {
+                    await fs.rm(config.outdir, {recursive: true});
+                } catch (e) {
+                    /* noop */
+                }
                 promises.push(fs.cp(config.entryPoint, config.outdir, {recursive: true}));
             } else {
                 promises.push(esbuild.build(config));
@@ -60,4 +69,4 @@ async function run() {
     }
 }
 
-run().then(() => console.log("Process finished."));
+run().then(() => console.log("Build finished."));
