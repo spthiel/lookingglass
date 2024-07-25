@@ -39,5 +39,12 @@ export default function configs(watch: boolean): (BuildOptions | AssetOptions)[]
             entryPoint: path.resolve("src", "page", "assets"),
             outdir: path.resolve(outFolder, "page", "assets"),
         },
+        {
+            entryPoints: [path.resolve("src", "teams-userscript", "main.ts")],
+            outfile: path.resolve(outFolder, "teams-userscript", "main.js"),
+            bundle: true,
+            platform: "browser",
+            minify: !watch,
+        },
     ];
 }
