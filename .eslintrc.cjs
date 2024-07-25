@@ -4,7 +4,11 @@ module.exports = {
     env: {node: true},
     extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
     parser: "@typescript-eslint/parser",
-    plugins: ["@typescript-eslint", "prettier"],
+    parserOptions: {
+        sourceType: "module",
+        ecmaVersion: "latest",
+    },
+    plugins: ["@typescript-eslint", "prettier", "simple-import-sort"],
     rules: {
         "@typescript-eslint/no-unused-vars": ["warn", {argsIgnorePattern: "^_"}],
         "@typescript-eslint/naming-convention": [
@@ -14,17 +18,19 @@ module.exports = {
                 leadingUnderscore: "forbid",
                 filter: {
                     regex: "_*",
-                    match: false
+                    match: false,
                 },
-                format: null
+                format: null,
             },
             {
                 selector: "parameter",
                 leadingUnderscore: "require",
                 format: null,
-                modifiers: ["unused"]
-            }
-        ]
+                modifiers: ["unused"],
+            },
+        ],
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
     },
-    overrides: []
+    overrides: [],
 };

@@ -1,5 +1,5 @@
-import path from "path";
 import {BuildOptions} from "esbuild";
+import path from "path";
 
 const outFolder = path.resolve("dist");
 

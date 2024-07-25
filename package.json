@@ -12,6 +12,7 @@
     "esbuild": "^0.23.0",
     "eslint": "^8.57.0",
     "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "prettier": "^3.3.2"
   },
   "description": "",
@@ -25,7 +26,10 @@
     "build:run": "node dist/build.cjs",
     "build:watch": "node dist/build.cjs watch",
     "watch": "npm run build:build && npm run build:watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src",
+    "lint-fix": "eslint src --fix",
+    "prettier": "prettier src --write"
   },
   "dependencies": {
     "@lookingglass/webxr": "^0.6.0",

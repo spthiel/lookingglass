@@ -1,9 +1,10 @@
-import esbuild, {BuildOptions} from "esbuild";
 import * as fs from "node:fs/promises";
-import chokidar from "chokidar";
 import path from "node:path";
-import {promiseDebounce} from "build:debounce.js";
+
 import configs, {AssetOptions} from "build:config.js";
+import {promiseDebounce} from "build:debounce.js";
+import chokidar from "chokidar";
+import esbuild, {BuildOptions} from "esbuild";
 
 const watch = process.argv[2] === "watch";
 
@@ -30,9 +31,9 @@ async function run() {
                 const path2 = path.join(config.entryPoint, "**", "*");
                 await fs.mkdir(config.outdir, {recursive: true});
                 const watcher = chokidar.watch(path2);
-                
+
                 const debounced = promiseDebounce(processFile, 1000);
-                
+
                 watcher.on("add", async (filePath) => {
                     debounced(config, filePath);
                 });
@@ -45,7 +46,7 @@ async function run() {
             } else {
                 const ctx = await esbuild.context({
                     ...config,
-                    logLevel: "info"
+                    logLevel: "info",
                 });
                 promises.push(ctx.watch());
             }

@@ -2,13 +2,13 @@
  * Executes callback once after the first pause of events for over {delay} milliseconds
  * or after the last execution finished, whichever takes longer.
  */
-export function promiseDebounce<C extends (...args: any[]) => Promise<any>>(
+export function promiseDebounce<C extends (...args: unknown[]) => Promise<unknown>>(
     callback: C,
     delay: number,
 ): (...args: Parameters<C>) => void {
     let timeout: NodeJS.Timeout;
     let timeoutReject: () => void;
-    let last: Promise<any>;
+    let last: Promise<unknown>;
 
     return (...args: Parameters<C>): void => {
         if (timeout) {
